@@ -62,6 +62,8 @@ module MusicTheory
     # abbreviation, and by the sequence of integers representing the
     # positions in the sequence. Each seq_dict should be assigned to one
     # dictionary.
+    #
+    #! seq_dict is the SeqDict class.
     class SeqDict
 
       # The nseqtype_ins_dict class represents a subdictionary of noteseq
@@ -71,6 +73,8 @@ module MusicTheory
       # integral positions as the major scale; i.e., [0, 2, 4, 5, 7, 9, 
       # 11]. To look up the correct object of the two by pattern, the
       # nseq_type must be specified.
+      #
+      #! nseqtype_ins_dict is the NseqtypeInsDict class.
       class NseqtypeInsDict; end
 
     end
@@ -204,10 +208,13 @@ module MusicTheory
     class SeqDict
       attr_accessor :nseq_temp
       attr_accessor :nseqtype_maps
+
+      #  The constructor for seq_dict.
+      # ==== Args
+      # nseq_types:: a list of possible nseq_type values for lookups.
+      # nseq_temp:: the associated temperament object.
+      #
       def initialize( nseq_types, nseq_temp )
-        #  The constructor for seq_dict. Arguments:
-        # nseq_types: a list of possible nseq_type values for lookups.
-        # nseq_temp: the associated temperament object.
         self.nseq_temp     = nseq_temp;
         self.nseqtype_maps = {};
         for i in nseq_types
@@ -667,17 +674,6 @@ module MusicTheory
   end
 end
 
-require 'active_support'
-require 'active_support/core_ext/object/deep_dup'
-def deep_freeze( obj )
-  case obj
-  when Hash
-    obj.each { |k, v| deep_freeze(k); deep_freeze(v) }
-  when Array
-    obj.each { |e| deep_freeze(e) }
-  end
-  obj.freeze
-end
 
 # We immediately use this class to define a Western or Chromatic temperament
 # object. Apart from useful for understanding the class, the object is used in
@@ -694,12 +690,10 @@ module MusicTheory
     def WestTempNew
       MusicTheory::Temperament.WestTempNew()
     end
-    # def self.WestTemp  # FIXME.
-    #   self.WestTempNew()
-    # end
+
     #WestTemp = deep_freeze(WestTempNew()) # the last failed in chords_test(1).
     #WestTemp = WestTempNew()  # the last failed in chords_test(1).
-    WestTemp = deep_freeze(WestTempNew())
+    WestTemp = MusicTheory.deep_freeze(WestTempNew())
     #ng. WestTemp.deep_freeze
 
   end

@@ -131,8 +131,13 @@ module MusicTheory
 
   # This function generates most of the chords in the Western tradition
   # (and some that are not really chords at all).
+  # ==== Args
+  # west_temp:: temperament.
+  # ==== Warns
+  #! this methods modifies west_temp. Be careful...
   #
-  def generate_west_chords()
+  def generate_west_chords( west_temp = MusicTheory::Temperament.
+                                          WestTempNew() )
     chordseq = []
     bases     = [[0, 3], [0, 4]]
     triads    = enl_seq(bases, [6, 7, 8])
@@ -155,22 +160,22 @@ module MusicTheory
                            suspended_sevenths
 
     # We add the power chords.
-    chordseq.append(NoteSeqChord.new("Power Fifth", WestTemp, [0, 7],
+    chordseq.append(NoteSeqChord.new("Power Fifth", west_temp, [0, 7],
        CHORDTYPE_DICT["Fifth"], "5"))
-    chordseq.append(NoteSeqChord.new("Tritone", WestTemp, [0, 6],
+    chordseq.append(NoteSeqChord.new("Tritone", west_temp, [0, 6],
        CHORDTYPE_DICT["Fifth"], "T"))
-    chordseq.append(NoteSeqChord.new("Power Sharp Fifth", WestTemp, [0, 8],
+    chordseq.append(NoteSeqChord.new("Power Sharp Fifth", west_temp, [0, 8],
        CHORDTYPE_DICT["Fifth"], "+5"))
 
 
     # We add the diminished chords, as they take special handling.
-    chordseq.append(NoteSeqChord.new("Diminish 7th", WestTemp, [0, 3, 6, 9],
+    chordseq.append(NoteSeqChord.new("Diminish 7th", west_temp, [0, 3, 6, 9],
        CHORDTYPE_DICT["Seventh"], "dim7"))
-    chordseq.append(NoteSeqChord.new("Diminish 9th", WestTemp, [0, 3, 6, 9, 13],
+    chordseq.append(NoteSeqChord.new("Diminish 9th", west_temp, [0, 3, 6, 9, 13],
        CHORDTYPE_DICT["Ninth"], "dim9"))
-    chordseq.append(NoteSeqChord.new("Diminish 11th", WestTemp,
+    chordseq.append(NoteSeqChord.new("Diminish 11th", west_temp,
        [0, 3, 6, 9, 13, 16], CHORDTYPE_DICT["Eleventh"], "dim11"))
-    chordseq.append(NoteSeqChord.new("Diminish 13th", WestTemp,
+    chordseq.append(NoteSeqChord.new("Diminish 13th", west_temp,
        [0, 3, 6, 9, 13, 16, 20], CHORDTYPE_DICT["Thirteenth"], "dim13"))
 
 
@@ -201,7 +206,7 @@ module MusicTheory
         our_tname = triad_names[i][j]
         our_tabbr = triad_abbrv[i][j]
         chordseq.append(NoteSeqChord.new(
-          our_tname, WestTemp, [0, i, j],
+          our_tname, west_temp, [0, i, j],
           CHORDTYPE_DICT["Triad"], our_tabbr))
 
         #
@@ -210,7 +215,7 @@ module MusicTheory
             # pass;
           else
             chordseq.append(NoteSeqChord.new(our_tname + add9_names[k],
-              WestTemp, [0, i, j, k],
+              west_temp, [0, i, j, k],
               CHORDTYPE_DICT["Added Ninth"],
               our_tabbr+add9_abbrv[k]))
           end
@@ -222,7 +227,7 @@ module MusicTheory
             # pass;
           else
             chordseq.append(NoteSeqChord.new(our_tname + add11_names[k],
-              WestTemp, [0, i, j, k], CHORDTYPE_DICT["Added Eleventh"],
+              west_temp, [0, i, j, k], CHORDTYPE_DICT["Added Eleventh"],
               our_tabbr+add11_abbrv[k]))
           end
         end
@@ -233,7 +238,7 @@ module MusicTheory
             #  pass; # Pattern already taken by Diminished 7 chord.
           else
             chordseq.append(NoteSeqChord.new(our_tname + add6_names[k],
-              WestTemp, [0, i, j, k], CHORDTYPE_DICT["Sixth"],
+              west_temp, [0, i, j, k], CHORDTYPE_DICT["Sixth"],
               our_tabbr+add6_abbrv[k]))
           end
 
@@ -243,7 +248,7 @@ module MusicTheory
             else
               chordseq.append(NoteSeqChord.new(
                 our_tname + add6_names[k] + add9_names[l],
-                WestTemp, [0, i, j, k, l], 
+                west_temp, [0, i, j, k, l], 
                 CHORDTYPE_DICT["Sixth/Ninth"],
                 our_tabbr+add6_abbrv[k]+add9_abbrv[l]))
             end
@@ -258,18 +263,18 @@ module MusicTheory
     # from other chords, as one can't put 9th, 11th or 13th on there.
     #
     chordseq.append(NoteSeqChord.new("Suspend Flat 5th",
-      WestTemp, [0, 5, 6], CHORDTYPE_DICT["Suspended"], "sus-5"))
+      west_temp, [0, 5, 6], CHORDTYPE_DICT["Suspended"], "sus-5"))
     chordseq.append(NoteSeqChord.new("Suspend",
-      WestTemp, [0, 5, 7], CHORDTYPE_DICT["Suspended"], "sus"))
+      west_temp, [0, 5, 7], CHORDTYPE_DICT["Suspended"], "sus"))
     chordseq.append(NoteSeqChord.new("Suspend Sharp 5th",
-      WestTemp, [0, 5, 8], CHORDTYPE_DICT["Suspended"], "sus+5"))
+      west_temp, [0, 5, 8], CHORDTYPE_DICT["Suspended"], "sus+5"))
 
     # PKM2014 - add two pseudo suspended chords
 
     chordseq.append(NoteSeqChord.new("Suspend Sharp 4th",
-      WestTemp, [0, 6, 7], CHORDTYPE_DICT["Suspended"], "sus+4"))
+      west_temp, [0, 6, 7], CHORDTYPE_DICT["Suspended"], "sus+4"))
     chordseq.append(NoteSeqChord.new("Suspend Sharp 4th Sharp 5th",
-      WestTemp, [0, 6, 8], CHORDTYPE_DICT["Suspended"], "sus+4+5"))
+      west_temp, [0, 6, 8], CHORDTYPE_DICT["Suspended"], "sus+4+5"))
 
 
     # Afterwards, we add the 7th (including sus 7th), 9th, 11th and
@@ -379,7 +384,7 @@ module MusicTheory
         else
           our_chordtype = CHORDTYPE_DICT["Seventh"]
           chordseq.append(NoteSeqChord.new(name,
-            WestTemp, i, our_chordtype, abbrev))
+            west_temp, i, our_chordtype, abbrev))
         end
       end
 

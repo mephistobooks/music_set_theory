@@ -20,6 +20,8 @@ class MusicTheory::TemperamentTest < Test::Unit::TestCase
   attr_accessor :majorchord
   attr_accessor :majorscale
   attr_accessor :seq_maps
+
+  attr_accessor :west_temp
   def self.startup;   end
   def self.shutdown;  end
 
@@ -54,6 +56,13 @@ class MusicTheory::TemperamentTest < Test::Unit::TestCase
       self.major_interval)
     self.seq_maps.add_elem(self.majorscale, NSEQ_SCALE, "Major", [],
             CHROM_NAT_NOTE_POS)
+
+    # for the dependancy of the state...
+    #
+    #
+    # self.west_temp = WestTemp.deep_dup
+    self.west_temp = MusicTheory::Temperament.WestTempNew()
+
   end
 
   def teardown
@@ -69,22 +78,29 @@ end
 class MusicTheory::TemperamentTest
 
   test "init" do
+    # wt = WestTemp
+    wt = self.west_temp
 
     #
-    assert_equal CHROM_SIZE, WestTemp.no_keys
-    assert_equal 7, WestTemp.no_nat_keys
-    assert_equal CHROM_NAT_NOTES, WestTemp.nat_keys
-    assert_equal CHROM_NAT_NOTE_POS, WestTemp.nat_key_posn
+    assert_equal CHROM_SIZE, wt.no_keys
+    assert_equal 7, wt.no_nat_keys
+    assert_equal CHROM_NAT_NOTES, wt.nat_keys
+    assert_equal CHROM_NAT_NOTE_POS, wt.nat_key_posn
 
     for i in 0...7
       note_desired  = CHROM_NAT_NOTES[i]
-      note_index    = WestTemp.nat_key_pos_lookup[note_desired]
+      note_index    = wt.nat_key_pos_lookup[note_desired]
 
-      assert_equal note_desired, WestTemp.pos_lookup_nat_key[note_index]
+      assert_equal note_desired, wt.pos_lookup_nat_key[note_index]
     end
+
   end
 
   test "get_pos_of_key" do
+    # wt = WestTemp
+    wt = self.west_temp
+
+    # add tests for RE_NOTEPARSE.
     tmp = RE_NOTEPARSE.match("C#")
     ret = tmp[:basenotename].chars
     exp = ["C", "#"]
@@ -95,70 +111,79 @@ class MusicTheory::TemperamentTest
     exp = ["C", "\u266f"]
     assert_equal exp, ret
 
+    #
     for i in 0...CHROM_SIZE
       # $stderr.puts "i: #{i}, chrom: #{self.chromabsrep[i]}"
-      assert_equal i, WestTemp.get_pos_of_key(self.chromabsrep[i])
+      assert_equal i, wt.get_pos_of_key(self.chromabsrep[i])
     end
   end
 
   test "get_key_of_pos" do
+    # wt = WestTemp
+    wt = self.west_temp
 
     for i in 0...CHROM_SIZE
       assert_equal self.chrom_as_sharp[i],
-        WestTemp.get_key_of_pos(i, nil, true)
+        wt.get_key_of_pos(i, nil, true)
       assert_equal self.chrom_as_flat[i],
-        WestTemp.get_key_of_pos(i, nil, false)
+        wt.get_key_of_pos(i, nil, false)
       #
       if i < 6
         assert_equal "C" + (M_SHARP * i),
-          WestTemp.get_key_of_pos(i, "C", false)
+          wt.get_key_of_pos(i, "C", false)
         assert_equal "B" + (M_SHARP * (i + 1)),
-          WestTemp.get_key_of_pos(i, "B", false)
+          wt.get_key_of_pos(i, "B", false)
       elsif i == 6
         assert_equal "C" + (M_SHARP * 6),
-          WestTemp.get_key_of_pos(i, "C", false)
+          wt.get_key_of_pos(i, "C", false)
         assert_equal "B" + (M_FLAT * 5),
-          WestTemp.get_key_of_pos(i, "B", false)
+          wt.get_key_of_pos(i, "B", false)
       else
         assert_equal "C" + (M_FLAT * (12 - i)),
-          WestTemp.get_key_of_pos(i, "C", false)
+          wt.get_key_of_pos(i, "C", false)
         assert_equal "B" + (M_FLAT * (11 - i)),
-          WestTemp.get_key_of_pos(i, "B", false)
+          wt.get_key_of_pos(i, "B", false)
       end
     end
 
   end
 
   test "get_note_sequence" do
+    # wt = WestTemp
+    wt = self.west_temp
+
     assert_equal ["C", "E", "G"],
-      WestTemp.get_note_sequence("C", self.major_interval, nil, false)
+      wt.get_note_sequence("C", self.major_interval, nil, false)
     assert_equal ["C", "E", "G"],
-      WestTemp.get_note_sequence("C", self.major_interval, nil, true)
+      wt.get_note_sequence("C", self.major_interval, nil, true)
     assert_equal ["C", "E", "G"],
-      WestTemp.get_note_sequence(
+      wt.get_note_sequence(
         "C", self.major_interval, self.triad_pattern, true)
     assert_equal ["D" + M_FLAT, "F", "A" + M_FLAT],
-      WestTemp.get_note_sequence("C#", self.major_interval, nil, false)
+      wt.get_note_sequence("C#", self.major_interval, nil, false)
     assert_equal ["C" + M_SHARP, "F", "G" + M_SHARP],
-      WestTemp.get_note_sequence("C#", self.major_interval, nil, true)
+      wt.get_note_sequence("C#", self.major_interval, nil, true)
     assert_equal ["C" + M_SHARP, "E" + M_SHARP, "G" + M_SHARP],
-      WestTemp.get_note_sequence(
+      wt.get_note_sequence(
         "C#", self.major_interval, self.triad_pattern, true)
     assert_equal ["D" + M_FLAT, "F", "A" + M_FLAT],
-      WestTemp.get_note_sequence("Db", self.major_interval, nil, false)
+      wt.get_note_sequence("Db", self.major_interval, nil, false)
     assert_equal ["C" + M_SHARP, "F", "G" + M_SHARP],
-      WestTemp.get_note_sequence("Db", self.major_interval, nil, true)
+      wt.get_note_sequence("Db", self.major_interval, nil, true)
     assert_equal ["D" + M_FLAT, "F", "A" + M_FLAT],
-      WestTemp.get_note_sequence(
+      wt.get_note_sequence(
         "Db", self.major_interval, self.triad_pattern, true)
   end
 
   test "get_keyseq_notes" do
-    assert_equal ["C", [0, 4, 7]], WestTemp.get_keyseq_notes(["C", "E", "G"])
+    # wt = WestTemp
+    wt = self.west_temp
+
+    assert_equal ["C", [0, 4, 7]], wt.get_keyseq_notes(["C", "E", "G"])
     assert_equal ["C" + M_SHARP, [0, 4, 7]],
-      WestTemp.get_keyseq_notes(["C" + M_SHARP, "F", "A" + M_FLAT])
+      wt.get_keyseq_notes(["C" + M_SHARP, "F", "A" + M_FLAT])
     assert_equal ["D" + M_FLAT, [0, 4, 7]],
-      WestTemp.get_keyseq_notes(["D" + M_FLAT, "F", "A" + M_FLAT])
+      wt.get_keyseq_notes(["D" + M_FLAT, "F", "A" + M_FLAT])
   end
 
   # Fits all testing for the seq_dict class in here.
@@ -186,7 +211,7 @@ class MusicTheory::TemperamentTest
     #
     assert_equal self.majorchord,
       self.seq_maps.get_nseqby_name("Major", NSEQ_CHORD)
-    assert_equal self.majorscale, 
+    assert_equal self.majorscale,
       self.seq_maps.get_nseqby_name("Major", NSEQ_SCALE)
     assert_equal self.majorchord,
       self.seq_maps.get_nseqby_abbrv("maj", NSEQ_CHORD)
@@ -198,41 +223,45 @@ class MusicTheory::TemperamentTest
 
   # Like test_seq_dict, but checks dictionary in WestTemp.
   test "temperament_dict" do
-    assert_true WestTemp.check_nseqby_subdict(NSEQ_CHORD)
-    assert_true WestTemp.check_nseqby_subdict(NSEQ_SCALE)
-    assert_false WestTemp.check_nseqby_subdict(666)
+    # wt = WestTemp
+    wt = self.west_temp
 
     #
-    WestTemp.add_elem(self.majorchord, NSEQ_CHORD, "Major", "maj",
+    assert_true wt.check_nseqby_subdict(NSEQ_CHORD)
+    assert_true wt.check_nseqby_subdict(NSEQ_SCALE)
+    assert_false wt.check_nseqby_subdict(666)
+
+    #
+    wt.add_elem(self.majorchord, NSEQ_CHORD, "Major", "maj",
       self.major_interval)
-    WestTemp.add_elem(self.majorscale, NSEQ_SCALE, "Major", [],
+    wt.add_elem(self.majorscale, NSEQ_SCALE, "Major", [],
       CHROM_NAT_NOTE_POS)
-    assert_true WestTemp.check_nseqby_name(NSEQ_CHORD, "Major")
-    assert_true WestTemp.check_nseqby_name(NSEQ_SCALE, "Major")
-    assert_false WestTemp.check_nseqby_name(NSEQ_CHORD, "Minor")
-    assert_false WestTemp.check_nseqby_name(NSEQ_SCALE, "Minor")
-    assert_true WestTemp.check_nseqby_abbrv(NSEQ_CHORD, "maj")
-    assert_false WestTemp.check_nseqby_abbrv(NSEQ_SCALE, "maj")
-    assert_false WestTemp.check_nseqby_abbrv(NSEQ_CHORD, "min")
-    assert_false WestTemp.check_nseqby_abbrv(NSEQ_SCALE, "min")
-    assert_false WestTemp.check_nseqby_seqpos(NSEQ_CHORD,
-                                              CHROM_NAT_NOTE_POS)
-    assert_true WestTemp.check_nseqby_seqpos(NSEQ_SCALE,
-                                             CHROM_NAT_NOTE_POS)
-    assert_true WestTemp.check_nseqby_seqpos(NSEQ_CHORD,
-                                             self.major_interval)
+    assert_true wt.check_nseqby_name(NSEQ_CHORD, "Major")
+    assert_true wt.check_nseqby_name(NSEQ_SCALE, "Major")
+    assert_false wt.check_nseqby_name(NSEQ_CHORD, "Minor")
+    assert_false wt.check_nseqby_name(NSEQ_SCALE, "Minor")
+    assert_true wt.check_nseqby_abbrv(NSEQ_CHORD, "maj")
+    assert_false wt.check_nseqby_abbrv(NSEQ_SCALE, "maj")
+    assert_false wt.check_nseqby_abbrv(NSEQ_CHORD, "min")
+    assert_false wt.check_nseqby_abbrv(NSEQ_SCALE, "min")
+    assert_false wt.check_nseqby_seqpos(NSEQ_CHORD,
+                                        CHROM_NAT_NOTE_POS)
+    assert_true wt.check_nseqby_seqpos(NSEQ_SCALE,
+                                       CHROM_NAT_NOTE_POS)
+    assert_true wt.check_nseqby_seqpos(NSEQ_CHORD,
+                                       self.major_interval)
 
     #
     assert_equal self.majorchord,
-      WestTemp.get_nseqby_name("Major", NSEQ_CHORD)
+      wt.get_nseqby_name("Major", NSEQ_CHORD)
     assert_equal self.majorscale,
-      WestTemp.get_nseqby_name("Major", NSEQ_SCALE)
+      wt.get_nseqby_name("Major", NSEQ_SCALE)
     assert_equal self.majorchord,
-      WestTemp.get_nseqby_abbrv("maj", NSEQ_CHORD)
+      wt.get_nseqby_abbrv("maj", NSEQ_CHORD)
     assert_equal self.majorchord,
-      WestTemp.get_nseqby_seqpos(self.major_interval, NSEQ_CHORD)
+      wt.get_nseqby_seqpos(self.major_interval, NSEQ_CHORD)
     assert_equal self.majorscale,
-      WestTemp.get_nseqby_seqpos(CHROM_NAT_NOTE_POS, NSEQ_SCALE)
+      wt.get_nseqby_seqpos(CHROM_NAT_NOTE_POS, NSEQ_SCALE)
   end
 
 end

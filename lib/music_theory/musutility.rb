@@ -352,5 +352,23 @@ module MusicTheory
   end
 end
 
+require 'active_support'
+require 'active_support/core_ext/object/deep_dup'
+module MusicTheory
+  module MusUtility
+
+    def deep_freeze( obj )
+      case obj
+      when Hash
+        obj.each { |k, v| deep_freeze(k); deep_freeze(v) }
+      when Array
+        obj.each { |e| deep_freeze(e) }
+      end
+      obj.freeze
+    end
+
+  end
+end
+
 
 #### endof filename: music_theory/musutility.rb

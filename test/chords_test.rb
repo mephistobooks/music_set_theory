@@ -30,23 +30,35 @@ class MusicTheory::ChordsTest < Test::Unit::TestCase
     @west_temp_orig = WestTemp.deep_dup
   end
   def self.shutdown
+    Object.send(:remove_const, :WestTemp) if Object.const_defined?(:WestTemp)
+    Object.const_set(:WestTemp, self.west_temp_orig)
   end
   def self.west_temp_orig; @west_temp_orig; end
+  def west_temp_orig; self.class.send(__method__); end
 
   #
   attr_accessor :majorchord
+  attr_accessor :west_temp
   def setup
+    # self.west_temp = self.west_temp_orig.deep_dup
+    self.west_temp = MusicTheory::Temperament.WestTempNew()
+
     #@west_temp_orig = WestTemp.deep_dup
-    generate_west_chords()
+    generate_west_chords(self.west_temp)  # ok.
+
     #self.majorchord = WestTemp.get_nseqby_name("Major", NSEQ_CHORD)
     #ng.self.majorchord = WestTempNew().get_nseqby_name("Major", NSEQ_CHORD)
-    self.majorchord = WestTemp.get_nseqby_name("Major", NSEQ_CHORD)
+    # self.majorchord = WestTemp.get_nseqby_name("Major", NSEQ_CHORD)
+    #self.majorchord = MusicTheory::Temperament.WestTempNew().
+    #  get_nseqby_name("Major", NSEQ_CHORD)  #ng.
+
+    # self.majorchord = WestTemp.get_nseqby_name("Major", NSEQ_CHORD)
+    self.majorchord = self.west_temp.get_nseqby_name("Major", NSEQ_CHORD)
     assert_false self.majorchord.nil?
   end
 
   def teardown
     Object.send(:remove_const, :WestTemp) if Object.const_defined?(:WestTemp)
-    #Object.const_set(:WestTemp, @west_temp_orig)
     Object.const_set(:WestTemp, self.class.west_temp_orig)
   end
 
@@ -60,19 +72,24 @@ class MusicTheory::ChordsTest
 
   # Like test_seq_dict, but checks dictionary in WestTemp.
   test "ChordsTest  - temperament_dict" do
-    #
-    assert_true WestTemp.check_nseqby_subdict(NSEQ_CHORD)
-    assert_true WestTemp.check_nseqby_name(NSEQ_CHORD, "Major")
-    assert_true WestTemp.check_nseqby_name(NSEQ_CHORD, "Minor")
-    assert_false WestTemp.check_nseqby_name(NSEQ_CHORD, "Chord")
-    assert_true WestTemp.check_nseqby_abbrv(NSEQ_CHORD, "maj")
-    assert_true WestTemp.check_nseqby_abbrv(NSEQ_CHORD, "min")
-    assert_false WestTemp.check_nseqby_abbrv(NSEQ_SCALE, "chd")
-    assert_true WestTemp.check_nseqby_seqpos(NSEQ_CHORD, [0, 4, 7])
+    # wt = WestTemp
+    wt = self.west_temp
 
     #
-    assert_equal self.majorchord,
-      WestTemp.get_nseqby_name("Major", NSEQ_CHORD)
+    assert_false self.majorchord.nil?
+
+    # orig.
+    assert_true wt.check_nseqby_subdict(NSEQ_CHORD)
+    assert_true wt.check_nseqby_name(NSEQ_CHORD, "Major")
+    assert_true wt.check_nseqby_name(NSEQ_CHORD, "Minor")
+    assert_false wt.check_nseqby_name(NSEQ_CHORD, "Chord")
+    assert_true wt.check_nseqby_abbrv(NSEQ_CHORD, "maj")
+    assert_true wt.check_nseqby_abbrv(NSEQ_CHORD, "min")
+    assert_false wt.check_nseqby_abbrv(NSEQ_SCALE, "chd")
+    assert_true wt.check_nseqby_seqpos(NSEQ_CHORD, [0, 4, 7])
+
+    # orig.
+    assert_equal self.majorchord, wt.get_nseqby_name("Major", NSEQ_CHORD)
   end
 
   test "ChordsTest  - get_notes_for_chord" do
