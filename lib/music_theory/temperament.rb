@@ -56,6 +56,9 @@ module MusicTheory
   #
   #
   module Temperament
+    #
+    extend  MusUtility
+    include MusUtility
 
     # The seq_dict class acts as a dictionary for noteseq instances. It
     # allows users and programmers to look up noteseqs by name, by
@@ -140,6 +143,11 @@ module MusicTheory
     # more information.
     NSEQ_SCALE = 0  # Used for specifying scales.
     NSEQ_CHORD = 1  # Used for specifying chords.
+    NSEQ_TYPE_HASH = {
+      NSEQ_SCALE => 'SCALE',
+      NSEQ_CHORD => 'CHORD',
+    }
+    deep_freeze(NSEQ_TYPE_HASH)
 
   end
 end
@@ -198,6 +206,27 @@ module MusicTheory
         self.abbrv_dict   = {}
         self.seqpos_dict  = {}
       end
+
+      {
+        nseq_type:    [:type],
+        abbrv_dict:   [:abbr_dict],
+      }.each do |k, vary|
+
+        vary.each do |new_name|
+          getter_name = k
+          setter_name = k.to_s + "="
+          if method_defined? getter_name
+          new_getter_name = new_name
+          alias_method new_getter_name, getter_name
+          end
+          if method_defined? setter_name
+          new_setter_name = new_name.to_s + "="
+          alias_method new_setter_name, setter_name
+          end
+        end
+
+      end
+
     end
 
     # The seq_dict class acts as a dictionary for noteseq instances. It
@@ -236,16 +265,17 @@ module MusicTheory
 
     class SeqDict
 
-      # This adds an element to seq_dict. The arguments:
-      # elem: the element to add to seq_dict instance.
-      # nseq_type: the type of the elemenet (such as scale or chord).
-      # name_s: a string, or a sequence of strings. This provides names
-      # as keys that map onto elem.
-      # abbrv_s: a string, or a sequence of strings. This provides 
-      # abbreviations as keys that map onto elem.
-      # seqpos: a sequence. A tuple form will be used as a key that
-      # maps onto elem.
-      #
+      # This adds an element to seq_dict.
+      # ==== Args
+      # elem:: the element to add to seq_dict instance.
+      # nseq_type:: the type of the elemenet (such as scale or chord).
+      # name_s:: a string, or a sequence of strings. This provides names
+      #   as keys that map onto elem.
+      # abbrv_s:: a string, or a sequence of strings. This provides 
+      #   abbreviations as keys that map onto elem.
+      # seqpos:: a sequence. A tuple form will be used as a key that
+      #   maps onto elem.
+      # ==== Desc
       # If nseq_type is not associated with any of the sub-dictionaries in
       # seq_dict, then this function exits.
       def add_elem( elem, nseq_type, name_s, abbrv_s, seqpos )
@@ -363,13 +393,15 @@ module MusicTheory
       attr_accessor :parsenote
       attr_accessor :seq_maps
 
-      # Initialiser. It contains the following arguments.
-      # no_keys: the number of keys in the temperament. 
-      # nat_keys: an array consisting of the names of the natural 
+      # Initialiser.
+      # ==== Args
+      # no_keys:: the number of keys in the temperament.
+      # nat_keys:: an array consisting of the names of the natural
       #   (unsharped or unflattened) keys in the temperament.
-      # nat_key_posn: the position of the natural keys in the temperament.
+      # nat_key_posn:: the position of the natural keys in the temperament.
       #   These should correspond to the elements in nat_keys.
-      #   Positions are calculated base zero. 
+      #   Positions are calculated base zero.
+      #
       def initialize( no_keys, nat_keys, nat_key_posn )
         self.no_keys      = no_keys
         self.nat_keys     = nat_keys
@@ -405,7 +437,26 @@ module MusicTheory
         #  Useful for dictionary lookup later.
         #self.seq_maps = seq_dict([NSEQ_SCALE, NSEQ_CHORD], self);
         #self.seq_maps = SeqDict.new(NSEQ_SCALE, NSEQ_CHORD);
-        self.seq_maps = SeqDict.new([NSEQ_SCALE, NSEQ_CHORD], self);
+        self.seq_maps = SeqDict.new([NSEQ_SCALE, NSEQ_CHORD], self)
+
+      end
+
+      {
+        seq_maps:            [:seq_dict],
+      }.each do |k, vary|
+
+        vary.each do |new_name|
+          getter_name = k
+          setter_name = k.to_s + "="
+          if method_defined? getter_name
+          new_getter_name = new_name
+          alias_method new_getter_name, getter_name
+          end
+          if method_defined? setter_name
+          new_setter_name = new_name.to_s + "="
+          alias_method new_setter_name, setter_name
+          end
+        end
 
       end
 
@@ -424,10 +475,16 @@ module MusicTheory
     class Temperament
 
       # Parses the name of a key into the tuple (natural key name,
-      # sharp_or_flat count). For example "C#" is parsed into ("C", 1),
-      # "Db" is parsed into ("D", -1), and "E" is parsed into ("E", 0).
-      # As the reader may gather, negative numbers are used for 
-      # flattened notes.
+      # sharp_or_flat count).
+      # ==== Args
+      # key:: note.
+      #
+      # ==== Returns
+      # an array: [ <root note>, <adj number> ].
+      #   For example "C#" is parsed into ["C", 1], "Db" is parsed
+      #   into ["D", -1], and "E" is parsed into ["E", 0].
+      #   As the reader may gather, negative numbers are used for 
+      #   flattened notes.
       #
       def note_parse( key, debug_f: false )
         noteMatch = self.parsenote.match(key)
@@ -461,6 +518,13 @@ module MusicTheory
       end
 
       # Returns the position of the key in the temperament.
+      # ==== Args
+      # key:: key note. ex. "C", "D#", "Cb"
+      #
+      # ==== Returns
+      # position of the key in the unit of halftone. ex. key: "C"  =>0,
+      # key: "D#" =>3, key: "Cb" =>-1
+      #
       def get_pos_of_key( key, debug_f: false )
         key_parsed = self.note_parse(key)
         $stderr.puts "key_parsed: #{key_parsed}"  if debug_f
@@ -478,13 +542,16 @@ module MusicTheory
       # example, "C# and "Db" are the same key, but "C# is preferred in an
       # A major scale. Fortunately, arguments are provided to indicate the
       # programmer's preference.
-      # pos: the position inside the temperament.
-      # desired_nat_note: the preferred natural key to start the key name.
-      # For example "C" makes the function return "C#" instead of "Db".
-      # If None, then the preference depends on...
-      # sharp_not_flat: if True, returns the sharpened accidental form 
+      # ==== Args
+      # pos:: the position inside the temperament.
+      # desired_nat_note:: the preferred natural key to start the key name.
+      #   For example "C" makes the function return "C#" instead of "Db".
+      #   If None, then the preference depends on...
+      # sharp_not_flat:: if True, returns the sharpened accidental form 
       # (e.g., "C#"); if False, returns the flattened accidental form
       # (i.e., "Db").
+      # ==== Returns
+      #
       def get_key_of_pos( pos, desired_nat_note = nil, sharp_not_flat = nil )
 
         # accdtls: number of sharps or flats to add to the output string.
@@ -538,22 +605,27 @@ module MusicTheory
 
 
       # This function takes a key and a sequence of positions relative to
-      # it. It returns a sequence of notes. Arguments:
-      # key: the starting key; examples are "C", "C#" and "Db".
-      # pos_seq: a list of positions relative to it in the temperament
+      # it. It returns a sequence of notes.
+      # ==== Args
+      # key:: the starting key; examples are "C", "C#" and "Db".
+      # pos_seq:: a list of positions relative to it in the temperament
       #   base 0). For example, in the Western/Chromatic temperament, a
       #   key of "C" and a sequence of [0, 1] returns ["C", "C#].
-      # nat_pos_seq: a list of numbers. These are used to calculate the
+      # nat_pos_seq:: a list of numbers. These are used to calculate the
       #   desired natural notes produced from the corresponding positions
       #   in pos_seq. A number of 0 means to use the same natural note as
       #   in key, a number of 1 means using the next natural note, and so
       #   on. Examples for the Western/Chromatic scale:
-      #     get_note_sequence("C", [0, 1], [0, 0]) -> ["C", "C#"]
-      #     get_note_sequence("C", [0, 1], [0, 1]) -> ["C", "Dbb"]
-      #     get_note_sequence("C", [0, 1], [0, 6]) -> ["C", "B##"]
-      # sharp_not_flat: if nat_pos_seq is None, indicates whether notes 
+      #     get_note_sequence("C", [0, 1], [0, 0]) =>["C", "C#"]
+      #     get_note_sequence("C", [0, 1], [0, 1]) =>["C", "Dbb"]
+      #     get_note_sequence("C", [0, 1], [0, 6]) =>["C", "B##"]
+      # sharp_not_flat:: if nat_pos_seq is None, indicates whether notes 
       #   with accidentals are preferred to have sharps (True) or flats
       #   (False)
+      # ==== Returns
+      #
+      # ==== See Also
+      # - `#get_keyseq_notes()`
       #
       def get_note_sequence( key, pos_seq,
                              nat_pos_seq = nil, sharp_not_flat = nil )
@@ -587,8 +659,15 @@ module MusicTheory
       end
 
 
-      # The reverse of get_note_sequence. This takes a sequence of notes
-      # (note_seq) and converts it into [base key, position sequence];
+      # The reverse of get_note_sequence().
+      # ==== Args
+      # note_seq:: a sequence of notes (note_seq)
+      # ==== Returns
+      # [base key, position sequence]
+      # ==== Examples
+      # ["C", "D"]        =>["C", [0, 2]]
+      # ["D", "C#", "E"]  =>["D", [0, 11, 2]]
+      #
       # this is returned by the function.
       #
       def get_keyseq_notes( note_seq )
@@ -601,7 +680,7 @@ module MusicTheory
       end
 
 
-      ### The next few functions are rip-offs of seq_dict functions.
+      ### The next few functions are rip-offs of SeqDict functions.
 
       # This adds an element to the dictionary inside the temperament. The
       # arguments:

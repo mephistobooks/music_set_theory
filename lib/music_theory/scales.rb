@@ -80,34 +80,36 @@ module MusicTheory
 
     #
     # Initialiser. It contains the following arguments.
-    # nseq_name: the full name of the note sequence.
-    # nseq_type: the type of note sequence (e.g., NSEQ_SCALE or NSEQ_CHORD).
-    # nseq_temp: the musical temperament from which the sequence of notes is
+    # ==== Args
+    # nseq_name:: the full name of the note sequence.
+    # nseq_type:: the type of note sequence (e.g., NSEQ_SCALE or NSEQ_CHORD).
+    # nseq_temp:: the musical temperament from which the sequence of notes is
     #   taken. This should be an instance of the class temperament.
-    # nseq_posn: a sequence of integers representing positions of the notes
+    # nseq_posn:: a sequence of integers representing positions of the notes
     #   in the sequence relative to its first note. (For best results,
     #   the first item should be 0 to represent the first note.) 
-    # nseq_nat_posns: a sequence of integers (which should be the same size
+    # nseq_nat_posns:: a sequence of integers (which should be the same size
     #   as nseq_posn). For each item in nseq_posn, the corresponding item
     #   in nseq_nat_posns represent the difference in its calculated 
     #   natural note from the base key's natural note. For example, this
     #   parameter is [0, 2, 4] for a major chord; the second note is always
     #   two letters higher than the first note, and the third note is two
-    #   letters higher again 
-    # nseq_abbrv: the primary abbreviation for the note sequence (if any).
-    # nseq_synonyms: a list of possible synonyms, or extra names, for the 
+    #   letters higher again.
+    #   (! this is in degrees.)
+    # nseq_abbrv:: the primary abbreviation for the note sequence (if any).
+    # nseq_synonyms:: a list of possible synonyms, or extra names, for the 
     #   note sequence. For example, the "Ionian" mode is another name for
     #   the major scale as far as this class is concerned.
-    # nseq_other_abbrevs: a list of possible alternate abbreviations for the
+    # nseq_other_abbrevs:: a list of possible alternate abbreviations for the
     #   note sequence. For example, both "min7" and "m7" are abbreviations
     #   for the minor seventh chord.
-    # 
-    # Examples of defining scales:
-    # Major scale: noteseq("Major", NSEQ_SCALE, WestTemp, [0, 2, 4, 5, 7,
-    #   9, 11], range(7), nseq_synonyms = ["Ionian"]);
-    # Harmonic Minor scale: noteseq("Harmonic Minor", NSEQ_SCALE, WestTemp,
-    #   [0, 2, 3, 5, 7, 8, 11], range(7));
-    # 
+    #
+    # ==== Examples of defining scales:
+    # Major scale:: NoteSeq.new("Major", NSEQ_SCALE, WestTemp, [0, 2, 4, 5, 7,
+    #   9, 11], range(7), nseq_synonyms: ["Ionian"])
+    # Harmonic Minor scale:: NoteSeq.new("Harmonic Minor", NSEQ_SCALE, WestTemp,
+    #   [0, 2, 3, 5, 7, 8, 11], 0...7);
+    #
     # Examples of defining chords:
     # Major chord: noteseq("Major", NSEQ_CHORD, WestTemp, [0, 4, 7], 
     #   [0, 2, 4], "maj");
@@ -124,8 +126,10 @@ module MusicTheory
                   :nseq_other_abbrevs
     def initialize( nseq_name, nseq_type, nseq_temp, nseq_posn,
                     nseq_nat_posns,
-                    nseq_abbrev = "", nseq_synonyms = [],
-                    nseq_other_abbrevs = [] )
+                    # nseq_abbrev = "", nseq_synonyms = [],
+                    # nseq_other_abbrevs = [] )
+                    nseq_abbrev: "", nseq_synonyms: [],
+                    nseq_other_abbrevs: [] )
       self.nseq_name = nseq_name
       self.nseq_type = nseq_type
       self.nseq_temp = nseq_temp
@@ -136,7 +140,41 @@ module MusicTheory
       self.nseq_synonyms      = nseq_synonyms
       self.nseq_other_abbrevs = nseq_other_abbrevs
 
-      self.register_with_temp();
+      self.register_with_temp()
+    end
+
+    #
+    # alias name        nseq_name
+    # alias type        nseq_type
+    # alias temperament nseq_temp
+    # alias tment       nseq_temp   # *
+    #  :
+    # etc.
+    {
+      nseq_name:            [:name],
+      nseq_type:            [:type],
+      nseq_temp:            [:temp, :temperament,  :tment],
+      nseq_posn:            [:posn, :note_pos,     :notes],
+      nseq_nat_posns:       [:nat_posns, :note_nat, :notes_degree,
+                             :notes_deg],
+      nseq_abbrev:          [:abbrev,   :abbr],
+      nseq_synonyms:        [:synonyms, :syns],
+      nseq_other_abbrevs:   [:other_abbrevs, :abbr_others],
+    }.each do |k, vary|
+
+      vary.each do |new_name|
+        getter_name = k
+        setter_name = k.to_s + "="
+        if method_defined? getter_name
+          new_getter_name = new_name
+          alias_method new_getter_name, getter_name
+        end
+        if method_defined? setter_name
+          new_setter_name = new_name.to_s + "="
+          alias_method new_setter_name, setter_name
+        end
+      end
+
     end
 
   end
@@ -249,13 +287,12 @@ module MusicTheory
                     nseq_modes = [], debug_f: false )
       #
       return super(
-        nseq_name, NSEQ_SCALE, nseq_temp, nseq_posn,
-        nseq_nat_posns
+        nseq_name, NSEQ_SCALE, nseq_temp, nseq_posn, nseq_nat_posns
       ) if nseq_modes.empty?
 
       ###
-      super(nseq_name, NSEQ_SCALE, nseq_temp, nseq_posn,
-            nseq_nat_posns, "", [nseq_modes[0]])
+      super(nseq_name, NSEQ_SCALE, nseq_temp, nseq_posn, nseq_nat_posns,
+            nseq_abbrev: "", nseq_synonyms: [nseq_modes[0]])
 
       new_nseq_pos      = nseq_posn
       new_nseq_nat_pos  = nseq_nat_posns
@@ -271,6 +308,7 @@ module MusicTheory
         new_nseq_pos     = rotate_and_zero(new_nseq_pos, 1, nseq_temp.no_keys)
         new_nseq_nat_pos = rotate_and_zero(new_nseq_nat_pos, 1,
                              nseq_temp.no_nat_keys)
+
         # create an other scale.
         NoteSeqScale.new(
           nseq_modes[i], nseq_temp, new_nseq_pos, new_nseq_nat_pos)

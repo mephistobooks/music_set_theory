@@ -76,11 +76,13 @@ module MusicTheory
     # nseq_posn:: position of notes in chord.
     # nseq_nat_posns:: natural note positions for notes in scales.
     # nseq_abbrev:: main abbreviation for chord.
+    # ==== See Also
+    # - `NoteSeq#initialize()`
     #
     def initialize( nseq_name, nseq_temp, nseq_posn, nseq_nat_posns,
                     nseq_abbrev )
        super(nseq_name, NSEQ_CHORD, nseq_temp, nseq_posn,
-             nseq_nat_posns, nseq_abbrev); 
+             nseq_nat_posns, nseq_abbrev: nseq_abbrev)
     end
 
     def to_s
@@ -104,7 +106,7 @@ module MusicTheory
   # stored as [0, 2, 4, 6] - not [1, 3, 5, 7].
   #
   # ==== Attention
-  # - base is 0, not 1.
+  #! in degree, but base is 0, not 1.
   #
   CHORDTYPE_DICT = {
     "Triad"             => [0, 2, 4],
@@ -133,6 +135,10 @@ module MusicTheory
   # (and some that are not really chords at all).
   # ==== Args
   # west_temp:: temperament.
+  #
+  # ==== Returns
+  # Chord table (Array of NoteSeqChord).
+  #
   # ==== Warns
   #! this methods modifies west_temp. Be careful...
   #
