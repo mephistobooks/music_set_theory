@@ -9,19 +9,18 @@ The music theory treats notes and the relationships among them, i.e., temperamen
 
 ## Installation
 
-TODO: Replace `UPDATE_WITH_YOUR_GEM_NAME_IMMEDIATELY_AFTER_RELEASE_TO_RUBYGEMS_ORG` with your gem name right after releasing it to RubyGems.org. Please do not do it earlier due to security reasons. Alternatively, replace this section with instructions to install your gem from git if you don't plan to release to RubyGems.org.
-
 Install the gem and add to the application's Gemfile by executing:
 
 ```bash
-bundle add UPDATE_WITH_YOUR_GEM_NAME_IMMEDIATELY_AFTER_RELEASE_TO_RUBYGEMS_ORG
+bundle add music_set_theory
 ```
 
 If bundler is not being used to manage dependencies, install the gem by executing:
 
 ```bash
-gem install UPDATE_WITH_YOUR_GEM_NAME_IMMEDIATELY_AFTER_RELEASE_TO_RUBYGEMS_ORG
+gem install music_set_theory
 ```
+
 
 ## Usage
 
@@ -43,13 +42,13 @@ If you want to test all:
 bundle exec rake test
 ```
 
-test a specified one:
+test a specified test case:
 
 ```bash
 TEST=./test/something_test.rb  bundle exec rake test
 ```
 
-If you want to test a test in a specified file, then:
+If you want to test specified test method(s), then:
 
 ```bash
 TESTOPTS=--name=/pattern-matches-to-the-description/ TEST=./test/something_test.rb  bundle exec rake test
