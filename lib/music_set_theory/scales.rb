@@ -121,6 +121,9 @@ module MusicSetTheory
     # Note: it is easier to define scales using the noteseq_scale class (this
     # file) and chord using the noteseq_chord class (in chords.py)
     #
+    # ==== Warning
+    # - ! This method updates `nseq_temp`.
+    #
     attr_accessor :nseq_name, :nseq_type, :nseq_temp, :nseq_posn
     attr_accessor :nseq_nat_posns, :nseq_abbrev, :nseq_synonyms,
                   :nseq_other_abbrevs
@@ -132,7 +135,10 @@ module MusicSetTheory
                     nseq_other_abbrevs: [] )
       self.nseq_name = nseq_name
       self.nseq_type = nseq_type
+
       self.nseq_temp = nseq_temp
+      # self.nseq_temp = deep_melt(nseq_temp.deep_dup)
+
       self.nseq_posn = nseq_posn
 
       self.nseq_nat_posns     = nseq_nat_posns
@@ -140,7 +146,8 @@ module MusicSetTheory
       self.nseq_synonyms      = nseq_synonyms
       self.nseq_other_abbrevs = nseq_other_abbrevs
 
-      self.register_with_temp()
+      #
+      self.register_with_temp(self.nseq_temp)
     end
 
     #
@@ -189,8 +196,10 @@ module MusicSetTheory
 
     # Registers this note sequence with the underlying temperament, so
     # that it can be looked up by name, by abbreviation or by sequence.
+    # ==== Warning
+    # - This methods updates `self.nseq_temp`
     #
-    def register_with_temp
+    def register_with_temp( nseq_temp = self.nseq_temp )
       if self.nseq_synonyms
         #if self.nseq_name not in self.nseq_synonyms
         if !(self.nseq_synonyms.include? self.nseq_name)
@@ -212,7 +221,9 @@ module MusicSetTheory
       else
         our_abbrevs = [self.nseq_abbrev]
       end
-      self.nseq_temp.seq_maps.add_elem(
+
+      #
+      nseq_temp.seq_maps.add_elem(
         self, self.nseq_type, our_names, our_abbrevs, self.nseq_posn)
     end
 

@@ -264,17 +264,35 @@ end
 
 require 'active_support'
 require 'active_support/core_ext/object/deep_dup'
+require 'ice_nine'
 module MusicSetTheory
   module MusUtility
 
     def deep_freeze( obj )
+      IceNine.deep_freeze(obj)
+    end
+
+    def deep_melt( obj )
       case obj
       when Hash
-        obj.each { |k, v| deep_freeze(k); deep_freeze(v) }
+        obj.each_with_object({}) do |(key, value), new_hash|
+          new_hash[deep_melt(key)] = deep_melt(value)
+        end
       when Array
-        obj.each { |e| deep_freeze(e) }
+        obj.map { |element| deep_melt(element) }
+      when Object
+        # インスタンス変数の解除
+        obj.instance_variables.each do |var|
+          deep_melt(var)
+          value = obj.instance_variable_get(var)
+          obj.remove_instance_variable(var)
+          obj.instance_variable_set(var, deep_melt(value))
+        end
+        obj.dup rescue obj # 凍結状態を解除
+      else
+        obj.dup rescue obj
       end
-      obj.freeze
+      obj.dup rescue obj
     end
 
   end

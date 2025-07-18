@@ -772,8 +772,11 @@ module MusicSetTheory
 
     #WestTemp = deep_freeze(WestTempNew()) # the last failed in chords_test(1).
     #WestTemp = WestTempNew()  # the last failed in chords_test(1).
-    WestTemp = MusicSetTheory.deep_freeze(WestTempNew())
     #ng. WestTemp.deep_freeze
+
+    ### freeze for debug.
+    # WestTemp = MusicSetTheory.deep_freeze(WestTempNew())
+    WestTemp = WestTempNew()  # ok. (dependancied removed in test cases).
 
   end
 end
