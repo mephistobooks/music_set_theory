@@ -1,6 +1,6 @@
-# MusicTheory
+# MusicSetTheory
 
-`music_theory.gem` is ruby version of `musictheory` of python package, by Peter Murphy.
+`music_set_theory.gem` is ruby version of `musictheory` of python package, by Peter Murphy.
 > The package has roughly the same philosophy as [Music Set Theory](https://www.jaytomlin.com/music/settheory/help.html) but uses different terminology.
 
 The music theory treats notes and the relationships among them, i.e., temperament, chords, scale, modes, etc.
@@ -66,7 +66,7 @@ All tests, including commented out one (`TestChords`), are passed now.
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at `https://github.com/mephistobooks/music_theory`.
+Bug reports and pull requests are welcome on GitHub at `https://github.com/mephistobooks/music_set_theory`.
 
 
 ## License
