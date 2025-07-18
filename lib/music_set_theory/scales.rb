@@ -357,54 +357,68 @@ module MusicSetTheory
 
   # For ease of comprehension, we have the list of modes as arrays which 
   # can be browsed from outside.
-  MAJORMODES = [ "Ionian",
+  MAJOR_MODES = [ "Ionian",
     "Dorian",
     "Phrygian",
     "Lydian",
     "Mixolydian",
     "Aeolian",
     "Locrian", ]
+  MAJORMODES = MAJOR_MODES
 
-  MELMINORMODES = [ "Jazz Minor",
+  MEL_MINOR_MODES = [ "Jazz Minor",
     "Dorian " + M_FLAT + "9",
     "Lydian Augmented",
     "Lydian Dominant",
     "Mixolydian " + M_FLAT + "13",
     "Semilocrian",
     "Superlocrian", ]
+  MELMINORMODES = MEL_MINOR_MODES
 
-  HARMINORMODES = [ "Harmonic Minor",
+  HARM_MINOR_MODES = [ "Harmonic Minor",
     "Locrian " + M_SHARP + "6",
     "Ionian Augmented",
     "Romanian",
     "Phrygian Dominant",
     "Lydian " + M_SHARP + "2",
     "Ultralocrian", ]
+  HARMINORMODES  = HARM_MINOR_MODES  # for compatibility... typo?
 
-  HARMMAJORMODES = [ "Harmonic Major",
+  HARM_MAJOR_MODES = [ "Harmonic Major",
     "Dorian " + M_FLAT + "6",
     "Phrygian " + M_FLAT + "4",
     "Lydian " + M_FLAT + "3",
     "Mixolydian " + M_FLAT + "9",
     "Lydian " + M_SHARP + "2 " + M_SHARP + "5",
     "Locrian " + M_FLAT + M_FLAT + "7", ]
+  HARMMAJORMODES = HARM_MAJOR_MODES
 
-  DISCORDMINMODES = [ "Melodic Minor " + M_FLAT + "5",
+  DISCORD_MIN_MODES = [ "Melodic Minor " + M_FLAT + "5",
     "Dorian " + M_FLAT + "9 " + M_FLAT + "4",
     "Minor Lydian Augmented",
     "Lydian Dominant " + M_FLAT + "9",
     "Lydian Augmented " + M_SHARP + "2 " + M_SHARP + "3",
     "Semilocrian " + M_FLAT + M_FLAT + "7",
     "Superlocrian " + M_FLAT + M_FLAT + "6", ]
+  DISCORDMINMODES = DISCORD_MIN_MODES
 
-  HUNGARIANMODES = [ "Hungarian",
+  HUNGARIAN_MODES = [ "Hungarian",
     "Superlocrian " + M_FLAT + M_FLAT + "6 " + M_FLAT + M_FLAT + "7",
     "Harmonic Minor " + M_FLAT + "5",
     "Superlocrian " + M_SHARP + "6",
     "Melodic Minor " + M_SHARP + "5",
     "Dorian " + M_FLAT + "9 " + M_SHARP + "11",
     "Lydian Augmented " + M_SHARP + "3", ]
+  HUNGARIANMODES = HUNGARIAN_MODES
 
+  MODE_ARRAY = [
+    MAJOR_MODES,
+    MEL_MINOR_MODES,
+    HARM_MINOR_MODES,
+    HARM_MAJOR_MODES,
+    DISCORD_MIN_MODES,
+    HUNGARIAN_MODES,
+  ]
 end
 
 
@@ -429,6 +443,15 @@ module MusicSetTheory
 
   HungarianScale = NoteSeqScale.new("Hungarian", WestTemp,
                      HUNGARIAN_NOTE_POS, HEPT_NAT_POSNS, HUNGARIANMODES)
+
+  ScaleArray = [
+    MajorScale,
+    MelMinorScale,
+    HarmMinorScale,
+    HarmMajorScale,
+    DiscMinorScale,
+    HungarianScale,
+  ]
 end
 
 

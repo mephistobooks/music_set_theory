@@ -760,6 +760,12 @@ end
 module MusicSetTheory
   module Temperament
 
+    #
+    # CHROM_SIZE:: number of semitones.
+    # CHROM_NAT_NOTE_POS:: position in number of semitones.
+    #   ex. D = 2 (i.e., C + #*2), E = 4 (C + #*4), etc.
+    # CHROM_NAT_NOTES:: natural notes.
+    #
     CHROM_NAT_NOTES     = ["C", "D", "E", "F", "G", "A", "B"]
     CHROM_NAT_NOTE_POS  = [0, 2, 4, 5, 7, 9, 11]
     CHROM_SIZE          = 12
