@@ -16,12 +16,12 @@ require "test_helper"
 #         print(str(i));
 
 
-class MusicTheory::ChordsTest < Test::Unit::TestCase
+class MusicSetTheory::ChordsTest < Test::Unit::TestCase
 
   #
-  include MusicTheory::Temperament
-  include MusicTheory
-  extend  MusicTheory
+  include MusicSetTheory::Temperament
+  include MusicSetTheory
+  extend  MusicSetTheory
 
   #
   def self.startup
@@ -41,7 +41,7 @@ class MusicTheory::ChordsTest < Test::Unit::TestCase
   attr_accessor :west_temp
   def setup
     # self.west_temp = self.west_temp_orig.deep_dup
-    self.west_temp = MusicTheory::Temperament.WestTempNew()
+    self.west_temp = MusicSetTheory::Temperament.WestTempNew()
 
     #@west_temp_orig = WestTemp.deep_dup
     generate_west_chords(self.west_temp)  # ok.
@@ -49,7 +49,7 @@ class MusicTheory::ChordsTest < Test::Unit::TestCase
     #self.majorchord = WestTemp.get_nseqby_name("Major", NSEQ_CHORD)
     #ng.self.majorchord = WestTempNew().get_nseqby_name("Major", NSEQ_CHORD)
     # self.majorchord = WestTemp.get_nseqby_name("Major", NSEQ_CHORD)
-    #self.majorchord = MusicTheory::Temperament.WestTempNew().
+    #self.majorchord = MusicSetTheory::Temperament.WestTempNew().
     #  get_nseqby_name("Major", NSEQ_CHORD)  #ng.
 
     # self.majorchord = WestTemp.get_nseqby_name("Major", NSEQ_CHORD)
@@ -68,7 +68,7 @@ end
 #
 #
 #
-class MusicTheory::ChordsTest
+class MusicSetTheory::ChordsTest
 
   # Like test_seq_dict, but checks dictionary in WestTemp.
   test "ChordsTest  - temperament_dict" do

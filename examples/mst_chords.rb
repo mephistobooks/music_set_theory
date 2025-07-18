@@ -2,10 +2,10 @@
 #
 #
 
-require_relative "../lib/music_theory"
+require_relative "../lib/music_set_theory"
 
 
-include MusicTheory
+include MusicSetTheory
 tmp = WestTempNew()
 generate_west_chords(tmp).each_with_index{|e, i|
   puts "(#{i+1}) #{e}:#{e.class}"

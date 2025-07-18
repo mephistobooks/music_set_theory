@@ -1,7 +1,7 @@
 #
 # frozen_string_literal: true
 #
-# filename: musutility.rb
+# filename: music_set_theory/chord_generator.rb
 #
 # Generating tables of chords associated with scales.
 
@@ -62,7 +62,7 @@ require 'romannumerals'
 #
 #
 #
-module MusicTheory
+module MusicSetTheory
 
   class ScaleChords;    end
   class ScaleChordRow;  end
@@ -74,7 +74,7 @@ end
 #
 #
 #
-module MusicTheory
+module MusicSetTheory
 
   # Used to give a full list of chord types.
   CHORDTYPE_ARRAY = [
@@ -91,7 +91,7 @@ module MusicTheory
 end
 
 
-module MusicTheory
+module MusicSetTheory
 
   # Roman numerals are used for the table headers.
 
@@ -158,7 +158,7 @@ module MusicTheory
 end
 
 
-module MusicTheory
+module MusicSetTheory
   # Represents all the chords associated with a scale. This is
   # used to make a tabular representation.
   #
@@ -198,7 +198,7 @@ module MusicTheory
 end
 
 
-module MusicTheory
+module MusicSetTheory
 
   # Used for converting "C" -> 1, "Db"-> 2b, etc.
   def makebaserep( notex, base = 0 )
@@ -328,4 +328,4 @@ module MusicTheory
 end
 
 
-#### endof filename: musictheory/chord_generator.rb
+#### endof filename: music_set_theory/chord_generator.rb

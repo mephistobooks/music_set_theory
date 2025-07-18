@@ -3,10 +3,10 @@
 # filename: examples/mt_temperament.rb
 #
 
-require_relative "../lib/music_theory"
+require_relative "../lib/music_set_theory"
 
 
-include MusicTheory
+include MusicSetTheory
 # tmp = WestTempNew()
 generate_west_chords(WestTemp)
 

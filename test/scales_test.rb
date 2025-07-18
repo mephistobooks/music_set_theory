@@ -9,15 +9,15 @@ require "test_helper"
 # This tests the note_seq and scales class.
 #
 #
-class MusicTheory::NoteSeq_ScalesTest < Test::Unit::TestCase
+class MusicSetTheory::NoteSeq_ScalesTest < Test::Unit::TestCase
 
   #
   def self.startup;   end
   def self.shutdown;  end
 
   #
-  include MusicTheory::Temperament
-  include MusicTheory
+  include MusicSetTheory::Temperament
+  include MusicSetTheory
 
   #
   attr_accessor :majorscale, :melminscale, :harmminscale
@@ -33,11 +33,11 @@ class MusicTheory::NoteSeq_ScalesTest < Test::Unit::TestCase
     #
     # This is ng. WestTemp has already been changed.
     # @nseqtype_maps is different.
-    #ng. self.west_temp = MusicTheory::Temperament.WestTempNew()
+    #ng. self.west_temp = MusicSetTheory::Temperament.WestTempNew()
     #ng. assert_equal self.west_temp, WestTemp
     
     self.west_temp = WestTemp.deep_dup
-    #self.west_temp = MusicTheory::Temperament.WestTempNew()  #ng.
+    #self.west_temp = MusicSetTheory::Temperament.WestTempNew()  #ng.
 
     #
     #
@@ -92,7 +92,7 @@ end
 #
 #
 #
-class MusicTheory::NoteSeq_ScalesTest
+class MusicSetTheory::NoteSeq_ScalesTest
 
   # Like test_seq_dict, but checks dictionary in WestTemp.
   test "temperament_dict" do

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 #
-# filename: music_theory/scale.rb
+# filename: music_set_theory/chords.rb
 #
 
 
@@ -52,7 +52,7 @@ require_relative "./scales"
 # A specialisation of noteseq used exclusively for defining chords -
 # especially chords associated with heptatonic/diotonic scales.
 #
-module MusicTheory
+module MusicSetTheory
 
   class NoteSeqChord < NoteSeq; end
 
@@ -62,7 +62,7 @@ end
 # Constructor.
 #
 #
-module MusicTheory
+module MusicSetTheory
 
   # A specialisation of noteseq used exclusively for defining chords -
   # especially chords associated with heptatonic/diotonic scales.
@@ -97,7 +97,7 @@ end
 #
 #
 #
-module MusicTheory
+module MusicSetTheory
 
   # Original comments:
   # This dictionary contains a list of different nseq_nat_posns values
@@ -129,7 +129,7 @@ end
 #
 #
 #
-module MusicTheory
+module MusicSetTheory
 
   # This function generates most of the chords in the Western tradition
   # (and some that are not really chords at all).
@@ -142,7 +142,7 @@ module MusicTheory
   # ==== Warns
   #! this methods modifies west_temp. Be careful...
   #
-  def generate_west_chords( west_temp = MusicTheory::Temperament.
+  def generate_west_chords( west_temp = MusicSetTheory::Temperament.
                                           WestTempNew() )
     chordseq = []
     bases     = [[0, 3], [0, 4]]
@@ -403,4 +403,4 @@ module MusicTheory
 end
 
 
-#### endof filename: music_theory/chords.rb
+#### endof filename: music_set_theory/chords.rb

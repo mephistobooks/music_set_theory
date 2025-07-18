@@ -9,7 +9,7 @@ require "test_helper"
 #
 #
 #
-class MusicTheory::MusUtilityTest < Test::Unit::TestCase
+class MusicSetTheory::MusUtilityTest < Test::Unit::TestCase
   attr_accessor :eseq
   attr_accessor :one_elem_seq, :one_elem_seq_one
   attr_accessor :two_elem_seq, :two_elem_seq_rot
@@ -42,14 +42,14 @@ class MusicTheory::MusUtilityTest < Test::Unit::TestCase
   end
 
   #
-  include MusicTheory
+  include MusicSetTheory
 end
 
 
 #
 #
 #
-class MusicTheory::MusUtilityTest
+class MusicSetTheory::MusUtilityTest
 
   test "rotate" do
 

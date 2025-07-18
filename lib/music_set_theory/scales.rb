@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 #
-# filename: music_theory/scale.rb
+# filename: music_set_theory/scale.rb
 #
 
 
@@ -59,7 +59,7 @@ require_relative "./temperament"
 # is 11 tones from the first note. Exercise for the reader: try this
 # concept with a _major_ chord. ]
 # 
-module MusicTheory
+module MusicSetTheory
 
   class NoteSeq
     include Temperament
@@ -75,7 +75,7 @@ end
 #
 #
 #
-module MusicTheory
+module MusicSetTheory
   class NoteSeq
 
     #
@@ -184,7 +184,7 @@ end
 #
 #
 #
-module MusicTheory
+module MusicSetTheory
   class NoteSeq
 
     # Registers this note sequence with the underlying temperament, so
@@ -271,7 +271,7 @@ end
 # A specialisation of noteseq used exclusively for defining scales -
 # especially heptatonic/diotonic scales.
 #
-module MusicTheory
+module MusicSetTheory
   class NoteSeqScale
 
     #
@@ -323,7 +323,7 @@ module MusicTheory
 end
 
 
-module MusicTheory
+module MusicSetTheory
 
   #
   include Temperament
@@ -400,7 +400,7 @@ end
 # Scales.
 #
 #
-module MusicTheory
+module MusicSetTheory
   MajorScale     = NoteSeqScale.new("Major", WestTemp,
                      CHROM_NAT_NOTE_POS, HEPT_NAT_POSNS, MAJORMODES)
 
@@ -421,7 +421,7 @@ module MusicTheory
 end
 
 
-module MusicTheory
+module MusicSetTheory
   # This is for decomposing a scale into chords. We use this as a test
   # routine so we know what is required.
   #
@@ -453,4 +453,4 @@ module MusicTheory
 end
 
 
-#### endof filename: music_theory/scales.rb
+#### endof filename: music_set_theory/scales.rb

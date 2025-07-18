@@ -1,7 +1,7 @@
 #
 # frozen_string_literal: true
 #
-# filename: musutility.rb
+# filename: music_set_theory/musutility.rb
 #
 
 
@@ -45,7 +45,7 @@
 #
 #
 #
-module MusicTheory
+module MusicSetTheory
 
   module MusUtility; end
 
@@ -57,7 +57,7 @@ end
 #
 #
 #
-module MusicTheory
+module MusicSetTheory
   module MusUtility
 
 
@@ -264,7 +264,7 @@ end
 
 require 'active_support'
 require 'active_support/core_ext/object/deep_dup'
-module MusicTheory
+module MusicSetTheory
   module MusUtility
 
     def deep_freeze( obj )
@@ -281,4 +281,4 @@ module MusicTheory
 end
 
 
-#### endof filename: music_theory/musutility.rb
+#### endof filename: music_set_theory/musutility.rb

@@ -9,7 +9,7 @@ require "test_helper"
 #
 #
 #
-class MusicTheory::TemperamentTest < Test::Unit::TestCase
+class MusicSetTheory::TemperamentTest < Test::Unit::TestCase
   attr_accessor :chromabsrep
   attr_accessor :chrom_as_sharp
   attr_accessor :chrom_as_flat
@@ -26,8 +26,8 @@ class MusicTheory::TemperamentTest < Test::Unit::TestCase
   def self.shutdown;  end
 
   #
-  include MusicTheory::Temperament
-  include MusicTheory
+  include MusicSetTheory::Temperament
+  include MusicSetTheory
 
   #
   def setup
@@ -61,7 +61,7 @@ class MusicTheory::TemperamentTest < Test::Unit::TestCase
     #
     #
     # self.west_temp = WestTemp.deep_dup
-    self.west_temp = MusicTheory::Temperament.WestTempNew()
+    self.west_temp = MusicSetTheory::Temperament.WestTempNew()
 
   end
 
@@ -75,7 +75,7 @@ end
 #
 #
 #
-class MusicTheory::TemperamentTest
+class MusicSetTheory::TemperamentTest
 
   test "init" do
     # wt = WestTemp

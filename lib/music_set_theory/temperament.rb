@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 #
-# filename: music_theory/temperament.rb
+# filename: music_set_theory/temperament.rb
 #
 
 
@@ -50,7 +50,7 @@ require_relative "./musutility"
 # Structure.
 #
 #
-module MusicTheory
+module MusicSetTheory
 
   #
   #
@@ -102,7 +102,7 @@ end
 #
 #
 #
-module MusicTheory
+module MusicSetTheory
   module Temperament
 
     # Unicode string constants for music notation.
@@ -156,7 +156,7 @@ end
 #
 #
 #
-module MusicTheory
+module MusicSetTheory
   module Temperament
 
 
@@ -184,7 +184,7 @@ end
 # The following class seq_dict is used as a multiple key map to noteseq 
 # instances, which are defined in scales.poy. However, seq_dict instances are
 # stored with temperament objects, which is why they are stored here.
-module MusicTheory
+module MusicSetTheory
   module Temperament
 
     # The nseqtype_ins_dict class represents a subdictionary of noteseq
@@ -260,7 +260,7 @@ end
 #
 #
 #
-module MusicTheory
+module MusicSetTheory
   module Temperament
 
     class SeqDict
@@ -381,7 +381,7 @@ end
 # 
 # Doing anything more at the moment is overkill. For example, we are not
 # intereted in the possible frequencies for notes of a given key.
-module MusicTheory
+module MusicSetTheory
   module Temperament
 
     class Temperament
@@ -469,7 +469,7 @@ end
 #
 #
 #
-module MusicTheory
+module MusicSetTheory
   module Temperament
 
     class Temperament
@@ -757,7 +757,7 @@ end
 # We immediately use this class to define a Western or Chromatic temperament
 # object. Apart from useful for understanding the class, the object is used in
 # testing.
-module MusicTheory
+module MusicSetTheory
   module Temperament
 
     CHROM_NAT_NOTES     = ["C", "D", "E", "F", "G", "A", "B"]
@@ -767,12 +767,12 @@ module MusicTheory
       Temperament.new(CHROM_SIZE, CHROM_NAT_NOTES, CHROM_NAT_NOTE_POS)
     end
     def WestTempNew
-      MusicTheory::Temperament.WestTempNew()
+      MusicSetTheory::Temperament.WestTempNew()
     end
 
     #WestTemp = deep_freeze(WestTempNew()) # the last failed in chords_test(1).
     #WestTemp = WestTempNew()  # the last failed in chords_test(1).
-    WestTemp = MusicTheory.deep_freeze(WestTempNew())
+    WestTemp = MusicSetTheory.deep_freeze(WestTempNew())
     #ng. WestTemp.deep_freeze
 
   end
@@ -780,4 +780,4 @@ end
 
 
 
-#### endof filename: music_theory/temperament.rb
+#### endof filename: music_set_theory/temperament.rb

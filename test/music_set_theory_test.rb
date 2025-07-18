@@ -9,7 +9,7 @@ require "test_helper"
 #
 #
 #
-class MusicTheoryTest < Test::Unit::TestCase
+class MusicSetTheoryTest < Test::Unit::TestCase
   def self.startup;   end
   def self.shutdown;  end
 
@@ -21,11 +21,11 @@ end
 #
 #
 #
-class MusicTheoryTest
+class MusicSetTheoryTest
 
   test "VERSION" do
     assert do
-      ::MusicTheory.const_defined?(:VERSION)
+      ::MusicSetTheory.const_defined?(:VERSION)
     end
   end
 
