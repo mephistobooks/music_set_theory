@@ -435,6 +435,28 @@ module MusicSetTheory
   HarmMinorScale = NoteSeqScale.new("Harmonic Minor", WestTemp,
                      HARM_MIN_NOTE_POS, HEPT_NAT_POSNS, HARMINORMODES)
 
+  def self.def_scale( const_name, name: , tment: ,
+                      note_pos: , modes: [],
+                      scale_array: :ScaleArray )
+    posns = (0...(note_pos.size)).to_a
+
+    tmp = NoteSeqScale.new(name, tment, note_pos, posns, modes)
+    self.const_set(const_name, tmp)
+    ret = self.const_get(const_name)
+
+    self.const_get(scale_array).const_set(const_name,ret)
+
+    ret
+  end
+
+  def self.undef_scale( const_name, scale_array: :ScaleArray )
+    self.const_get(scale_array).send(:remove_const, const_name)
+    self.send(:remove_const, const_name)
+  end
+
+  def self.scales( scale_array: :ScaleArray )
+    self.const_get(scale_array).constants
+  end
   HarmMajorScale = NoteSeqScale.new("Harmonic Major", WestTemp,
                      HARM_MAJ_NOTE_POS, HEPT_NAT_POSNS, HARMMAJORMODES)
 
