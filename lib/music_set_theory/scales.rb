@@ -355,6 +355,7 @@ module MusicSetTheory
   DISC_MIN_NOTE_POS   = [0, 2, 3, 5, 6, 9, 11]
   HUNGARIAN_NOTE_POS  = [0, 3, 4, 6, 7, 9, 10]
 
+
   # For ease of comprehension, we have the list of modes as arrays which 
   # can be browsed from outside.
   MAJOR_MODES = [ "Ionian",
@@ -421,19 +422,24 @@ module MusicSetTheory
   ]
 end
 
-
-# Scales.
-#
-#
 module MusicSetTheory
-  MajorScale     = NoteSeqScale.new("Major", WestTemp,
-                     CHROM_NAT_NOTE_POS, HEPT_NAT_POSNS, MAJORMODES)
 
-  MelMinorScale  = NoteSeqScale.new("Melodic Minor", WestTemp,
-                     MEL_MIN_NOTE_POS, HEPT_NAT_POSNS, MELMINORMODES)
+  #
+  #
+  #
+  Pentatonic_NAT_POSNS = (0...5).to_a     # 5音音階
+  Hexatonic_NAT_POSNS  = (0...6).to_a     # 6音音階
+  Heptatonic_NAT_POSNS = HEPT_NAT_POSNS   # 7音音階
+  Octatonic_NAT_POSNS  = (0...8).to_a     # 8音音階
 
-  HarmMinorScale = NoteSeqScale.new("Harmonic Minor", WestTemp,
-                     HARM_MIN_NOTE_POS, HEPT_NAT_POSNS, HARMINORMODES)
+  # Pentatonic.
+  #
+  #
+  MAJOR_PENTA_NOTE_POS  = [ 0, 2, 4, 7,  9, ]
+  MINOR_PENTA_NOTE_POS  = [ 0, 3, 5, 7, 10, ]
+  RYUKYU_PENTA_NOTE_POS = [ 0, 4, 5, 7, 11, ]
+
+  BLUES_HEXA_NOTE_POS   = [ 0, 3, 5, 6, 7, 10, ]
 
   def self.def_scale( const_name, name: , tment: ,
                       note_pos: , modes: [],
@@ -457,23 +463,59 @@ module MusicSetTheory
   def self.scales( scale_array: :ScaleArray )
     self.const_get(scale_array).constants
   end
-  HarmMajorScale = NoteSeqScale.new("Harmonic Major", WestTemp,
-                     HARM_MAJ_NOTE_POS, HEPT_NAT_POSNS, HARMMAJORMODES)
 
-  DiscMinorScale = NoteSeqScale.new("Discordant Minor", WestTemp,
-                     DISC_MIN_NOTE_POS, HEPT_NAT_POSNS, DISCORDMINMODES)
+end
 
-  HungarianScale = NoteSeqScale.new("Hungarian", WestTemp,
-                     HUNGARIAN_NOTE_POS, HEPT_NAT_POSNS, HUNGARIANMODES)
 
-  ScaleArray = [
-    MajorScale,
-    MelMinorScale,
-    HarmMinorScale,
-    HarmMajorScale,
-    DiscMinorScale,
-    HungarianScale,
-  ]
+# Scales.
+#
+#
+module MusicSetTheory
+  #ScaleArray = []
+  module ScaleArray; end
+
+  #MajorScale     = NoteSeqScale.new("Major", WestTemp,
+  #                   CHROM_NAT_NOTE_POS, HEPT_NAT_POSNS, MAJORMODES)
+  #MelMinorScale  = NoteSeqScale.new("Melodic Minor", WestTemp,
+  #                   MEL_MIN_NOTE_POS, HEPT_NAT_POSNS, MELMINORMODES)
+  #HarmMinorScale = NoteSeqScale.new("Harmonic Minor", WestTemp,
+  #                   HARM_MIN_NOTE_POS, HEPT_NAT_POSNS, HARMINORMODES)
+  #HarmMajorScale = NoteSeqScale.new("Harmonic Major", WestTemp,
+  #                   HARM_MAJ_NOTE_POS, HEPT_NAT_POSNS, HARMMAJORMODES)
+  #DiscMinorScale = NoteSeqScale.new("Discordant Minor", WestTemp,
+  #                   DISC_MIN_NOTE_POS, HEPT_NAT_POSNS, DISCORDMINMODES)
+  #HungarianScale = NoteSeqScale.new("Hungarian", WestTemp,
+  #                   HUNGARIAN_NOTE_POS, HEPT_NAT_POSNS, HUNGARIANMODES)
+  def_scale :MajorScale, name: "Major", tment: WestTemp,
+    note_pos: CHROM_NAT_NOTE_POS, modes: MAJOR_MODES
+
+  def_scale :MelMinorScale, name: "Melodic Minor", tment: WestTemp,
+    note_pos: MEL_MIN_NOTE_POS, modes: MEL_MINOR_MODES
+
+  def_scale :HarmMinorScale, name: "Harmonic Minor", tment: WestTemp,
+    note_pos: HARM_MIN_NOTE_POS, modes: HARM_MINOR_MODES
+
+  def_scale :HarmMajorScale, name: "Harmonic Major", tment: WestTemp,
+    note_pos: HARM_MAJ_NOTE_POS, modes: HARM_MAJOR_MODES
+
+  def_scale :DiscMinorScale, name: "Discordant Minor", tment: WestTemp,
+    note_pos: DISC_MIN_NOTE_POS, modes: DISCORD_MIN_MODES
+
+  def_scale :HungarianScale, name: "Hungarian", tment: WestTemp,
+    note_pos: HUNGARIAN_NOTE_POS, modes: HUNGARIAN_MODES
+
+  # Pentatonic scales.
+  def_scale :MajorPentaScale, name: "Major Pentatonic", tment: WestTemp,
+    note_pos: MAJOR_PENTA_NOTE_POS
+  def_scale :MinorPentaScale, name: "Minor Pentatonic", tment: WestTemp,
+    note_pos: MINOR_PENTA_NOTE_POS
+  def_scale :RyukyuPentaScale, name: "Ryukyu Pentatonic", tment: WestTemp,
+    note_pos: RYUKYU_PENTA_NOTE_POS
+
+  # Hexatonic scales.
+  def_scale :BluesHexaScale, name: "Blues", tment: WestTemp,
+    note_pos: BLUES_HEXA_NOTE_POS
+
 end
 
 

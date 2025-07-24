@@ -223,4 +223,48 @@ class MusicSetTheory::NoteSeq_ScalesTest
 end
 
 
+#
+#
+#
+class MusicSetTheory::NoteSeq_ScalesTest
+
+  test "NoteSeq_Scales  - scales" do
+
+    ret = MusicSetTheory.scales.sort
+    exp = [
+      :MajorScale,
+      :MelMinorScale,
+      :HarmMinorScale,
+      :HarmMajorScale,
+      :DiscMinorScale,
+      :HungarianScale,
+      :MajorPentaScale,
+      :MinorPentaScale,
+      :RyukyuPentaScale,
+      :BluesHexaScale,
+    ].sort
+    assert_equal exp, ret
+
+    #
+    MusicSetTheory.undef_scale(:MajorPentaScale)
+    ret = MusicSetTheory.scales.sort
+    exp = [
+      :MajorScale,
+      :MelMinorScale,
+      :HarmMinorScale,
+      :HarmMajorScale,
+      :DiscMinorScale,
+      :HungarianScale,
+      # :MajorPentaScale,
+      :MinorPentaScale,
+      :RyukyuPentaScale,
+      :BluesHexaScale,
+    ].sort
+    assert_equal exp, ret
+
+  end
+
+end
+
+
 #### endof filename: test/scales_test.rb
