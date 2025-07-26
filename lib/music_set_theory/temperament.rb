@@ -396,13 +396,23 @@ module MusicSetTheory
       # Initialiser.
       # ==== Args
       # no_keys:: the number of keys in the temperament.
+      #   !number of semitones in one octave. ex. 12.
       # nat_keys:: an array consisting of the names of the natural
       #   (unsharped or unflattened) keys in the temperament.
+      #   ex.
+      #     ["C", "D", "E", "F", "G", "A", "B"]
+      #
       # nat_key_posn:: the position of the natural keys in the temperament.
       #   These should correspond to the elements in nat_keys.
       #   Positions are calculated base zero.
+      #   ex.
+      #     [  0,   2,   4,   5,   7,   9,  11]
       #
-      def initialize( no_keys, nat_keys, nat_key_posn )
+      # def initialize( no_keys, nat_keys, nat_key_posn )
+      def initialize( no_keys       = CHROM_SIZE,
+                      nat_keys      = CHROM_NAT_NOTES,
+                      nat_key_posn  = CHROM_NAT_NOTE_POS )
+        #
         self.no_keys      = no_keys
         self.nat_keys     = nat_keys
         self.nat_key_posn = nat_key_posn
@@ -436,13 +446,29 @@ module MusicSetTheory
 
         #  Useful for dictionary lookup later.
         #self.seq_maps = seq_dict([NSEQ_SCALE, NSEQ_CHORD], self);
-        #self.seq_maps = SeqDict.new(NSEQ_SCALE, NSEQ_CHORD);
         self.seq_maps = SeqDict.new([NSEQ_SCALE, NSEQ_CHORD], self)
 
       end
 
+      # Alias methods of getters+setters.
+      # {
+      #   original_base_name: [ name of aliases ],
+      #   original_base_name: [ name of aliases ],
+      #   :
+      #   :
+      # }
+      #
       {
-        seq_maps:            [:seq_dict],
+        no_keys:      [ :num_semitones, :num_keys, ],
+        nat_keys:     [ :natural_key_names, ],
+        nat_key_posn: [ :natural_key_positions, ],
+        no_nat_keys:  [ :num_natural_keys, ],
+        nat_key_pos_lookup: [
+          :natural_key_position_lookup, :natural_key_position_dict, ],
+        pos_lookup_nat_key: [
+          :position_natural_key_lookup, :position_natural_key_dict, ],
+
+        seq_maps: [:seq_dict],
       }.each do |k, vary|
 
         vary.each do |new_name|
@@ -525,6 +551,9 @@ module MusicSetTheory
       # position of the key in the unit of halftone. ex. key: "C"  =>0,
       # key: "D#" =>3, key: "Cb" =>-1
       #
+      # ==== See Also
+      # - `#get_key_of_pos()`
+      #
       def get_pos_of_key( key, debug_f: false )
         key_parsed = self.note_parse(key)
         $stderr.puts "key_parsed: #{key_parsed}"  if debug_f
@@ -534,6 +563,9 @@ module MusicSetTheory
         ret = self.nat_key_pos_lookup[key_parsed[0]] + key_parsed[1]
         ret
       end
+      alias pos_of_key  get_pos_of_key
+      alias position_of get_pos_of_key
+      alias pos_of      get_pos_of_key
 
       # Given a position in the temperament, this function attempts to
       # return the "best" key name corresponding to it. This is not a 
@@ -546,9 +578,9 @@ module MusicSetTheory
       # pos:: the position inside the temperament.
       # desired_nat_note:: the preferred natural key to start the key name.
       #   For example "C" makes the function return "C#" instead of "Db".
-      #   If None, then the preference depends on...
-      # sharp_not_flat:: if True, returns the sharpened accidental form 
-      # (e.g., "C#"); if False, returns the flattened accidental form
+      #   If nil, then the preference depends on...
+      # sharp_not_flat:: if true, returns the sharpened accidental form 
+      # (e.g., "C#"); if false, returns the flattened accidental form
       # (i.e., "Db").
       # ==== Returns
       #
@@ -602,6 +634,8 @@ module MusicSetTheory
 
         return nil
       end
+      alias key_of_pos get_key_of_pos
+      alias key_of     get_key_of_pos
 
 
       # This function takes a key and a sequence of positions relative to
@@ -669,6 +703,8 @@ module MusicSetTheory
       # ["D", "C#", "E"]  =>["D", [0, 11, 2]]
       #
       # this is returned by the function.
+      # ==== See Also
+      # - `#get_note_sequence()`
       #
       def get_keyseq_notes( note_seq )
         base_key = note_seq[0]
@@ -679,52 +715,70 @@ module MusicSetTheory
         [base_key, pos_seq]
       end
 
+    end
+
+  end
+end
+
+
+#
+#
+#
+module MusicSetTheory
+  module Temperament
+
+    class Temperament
+
 
       ### The next few functions are rip-offs of SeqDict functions.
+      #
+      #! actually these are the utility methods for SeqDict instance.
+      #
 
-      # This adds an element to the dictionary inside the temperament. The
-      # arguments:
-      # elem: the element to add  to the dictionary .
-      # nseq_type: the type of the elemenet (such as scale or chord).
-      # name_s: a string, or a sequence of strings. This provides names
+
+      # This adds an element to the dictionary inside the temperament.
+      # ==== Args
+      # elem:: the element to add  to the dictionary .
+      # nseq_type:: the type of the elemenet (such as scale or chord).
+      # name_s:: a string, or a sequence of strings. This provides names
       #   as keys that map onto elem.
-      # abbrv_s: a string, or a sequence of strings. This provides 
+      # abbrv_s:: a string, or a sequence of strings. This provides 
       #   abbreviations as keys that map onto elem.
-      # seqpos: a sequence. A tuple form will be used as a key that
+      # seqpos:: a sequence. A tuple form will be used as a key that
       #   maps onto elem.
       #
       # If nseq_type is not associated with any of the sub-dictionaries in
       # the dictionary in the temperament, then this function exits.
       #
       def add_elem( elem, nseq_type, name_s, abbrv_s, seqpos )
-        self.seq_maps.add_elem(elem, nseq_type, name_s, abbrv_s, seqpos)
+        self.seq_dict.add_elem(elem, nseq_type, name_s, abbrv_s, seqpos)
       end
 
 
       # Checks if there is a subdictionary associated with nseq_type.
       def check_nseqby_subdict( nseq_type )
-        self.seq_maps.check_nseqby_subdict(nseq_type)
+        self.seq_dict.check_nseqby_subdict(nseq_type)
       end
 
       # Checks if there is a noteseq with a given name.
       def check_nseqby_name( nseq_type, name )
-        self.seq_maps.check_nseqby_name(nseq_type, name)
+        self.seq_dict.check_nseqby_name(nseq_type, name)
       end
 
       # Checks if there is a noteseq with a given abbreviation.
       def check_nseqby_abbrv( nseq_type, abbrv )
-        self.seq_maps.check_nseqby_abbrv(nseq_type, abbrv)
+        self.seq_dict.check_nseqby_abbrv(nseq_type, abbrv)
       end
 
       # Checks if there is a noteseq with a given sequence position.
       def check_nseqby_seqpos( nseq_type, seqpos )
-        self.seq_maps.check_nseqby_seqpos(nseq_type, seqpos)
+        self.seq_dict.check_nseqby_seqpos(nseq_type, seqpos)
       end
-  
+
       # Looks up a noteseq (or anything else) by name.
       def get_nseqby_name( name, nseq_type )
-         if self.seq_maps.check_nseqby_name(nseq_type, name)
-           self.seq_maps.get_nseqby_name(name, nseq_type)
+         if self.seq_dict.check_nseqby_name(nseq_type, name)
+           self.seq_dict.get_nseqby_name(name, nseq_type)
          else
            nil
          end
@@ -748,8 +802,8 @@ module MusicSetTheory
         end
       end
 
-
     end
+
   end
 end
 
@@ -766,9 +820,9 @@ module MusicSetTheory
     #   ex. D = 2 (i.e., C + #*2), E = 4 (C + #*4), etc.
     # CHROM_NAT_NOTES:: natural notes.
     #
+    CHROM_SIZE          = 12
     CHROM_NAT_NOTES     = ["C", "D", "E", "F", "G", "A", "B"]
     CHROM_NAT_NOTE_POS  = [  0,   2,   4,   5,   7,   9,  11]
-    CHROM_SIZE          = 12
     def self.WestTempNew
       Temperament.new(CHROM_SIZE, CHROM_NAT_NOTES, CHROM_NAT_NOTE_POS)
     end

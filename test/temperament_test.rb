@@ -267,4 +267,93 @@ class MusicSetTheory::TemperamentTest
 end
 
 
+#
+#
+#
+class MusicSetTheory::TemperamentTest
+
+  test "TemperamentTest -- note_parse" do
+
+    wt = self.west_temp
+
+    ret = wt.note_parse "C"
+    exp = ["C", 0]
+    assert_equal exp, ret
+
+    ret = wt.note_parse "A#"
+    exp = ["A", 1]
+    assert_equal exp, ret
+
+    ret = wt.note_parse "Ab"
+    exp = ["A", -1]
+    assert_equal exp, ret
+
+    ret = wt.note_parse "C" + M_NATURAL
+    exp = ["C", 0]
+    assert_equal exp, ret
+
+    ret = wt.note_parse "A" + M_SHARP
+    exp = ["A", 1]
+    assert_equal exp, ret
+
+    ret = wt.note_parse "A" + M_FLAT
+    exp = ["A", -1]
+    assert_equal exp, ret
+
+  end
+
+  test "TemperamentTest -- natural keys and positions" do
+
+    wt = self.west_temp
+
+    ret = wt.natural_key_names
+    exp = %w[C D E F G A B]
+    assert_equal exp, ret
+
+    ret = wt.natural_key_positions
+    exp = [0, 2, 4, 5, 7, 9, 11]
+    assert_equal exp, ret
+
+    ret = wt.num_natural_keys
+    exp = 7
+    assert_equal exp, ret
+
+    #
+    tmp_ary = []
+    wt.natural_key_names.each do |k|
+      tmp = wt.natural_key_position_lookup[k]
+      tmp_ary << tmp
+    end
+    ret = tmp_ary
+    exp = wt.natural_key_positions
+    assert_equal exp, ret
+
+    #
+    tmp_ary = []
+    wt.natural_key_positions.each do |k|
+      tmp = wt.position_natural_key_lookup[k]
+      tmp_ary << tmp
+    end
+    ret = tmp_ary
+    exp = wt.natural_key_names
+    assert_equal exp, ret
+
+    #
+    ret = wt.pos_of "C"
+    exp = 0
+    assert_equal exp, ret
+
+    ret = wt.pos_of "Cb"
+    exp = -1
+    assert_equal exp, ret
+
+    ret = wt.pos_of "D"
+    exp = 2
+    assert_equal exp, ret
+
+  end
+
+end
+
+
 #### endof filename: test/temperament_test.rb
