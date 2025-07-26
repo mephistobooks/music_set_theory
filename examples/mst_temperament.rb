@@ -24,19 +24,19 @@ nseqtype_dict.each {|k, v|
   dict = v
   puts pad2+"name_dict (#{dict.name_dict.keys.size}):"
   dict.name_dict.each_with_index {|(k, v), i|
-    puts pad2+pad+"(#{i+1}) #{k}: #{v}"
+    puts pad2+pad+"(#{i+1}) #{k}:#{v}"
   }
   puts
 
   puts pad2+"abbr_dict (#{dict.abbr_dict.keys.size}):"
   dict.abbr_dict.each_with_index {|(k, v), i|
-    puts pad2+pad+"(#{i+1}) #{k}: #{v}"
+    puts pad2+pad+"(#{i+1}) #{k}:#{v}"
   }
   puts
 
   puts pad2+"seqpos_dict (#{dict.seqpos_dict.keys.size}):"
   dict.seqpos_dict.each_with_index {|(k, v), i|
-    puts pad2+pad+"(#{i+1}) #{k}: #{v}"
+    puts pad2+pad+"(#{i+1}) #{k}:#{v}"
   }
 
   puts '-'*40
