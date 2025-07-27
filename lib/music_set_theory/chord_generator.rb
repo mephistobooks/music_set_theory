@@ -47,7 +47,7 @@ require_relative "./temperament"
 require_relative "./scales"
 require_relative "./chords"
 
-require 'romannumerals'
+require 'romanumerals'
 
 
 # import copy, codecs
@@ -57,6 +57,10 @@ require 'romannumerals'
 # from .scales import MajorScale, MelMinorScale, HarmMinorScale,\
 #     HarmMajorScale;
 # from .chords import CHORDTYPE_DICT;
+require_relative "musutility"
+require_relative "temperament"
+require_relative "scales"
+require_relative "chords"
 
 
 #
@@ -142,8 +146,9 @@ module MusicSetTheory
 #    >>> print int_to_roman(1999)
 #    MCMXCIX
 #    """
-  def int_to_roman(input)
-    raise "#{input} must be greater than zero." if input <= 0
+  def int_to_roman( input )
+    raise ArgumentError, "#{input} must be greater than zero." if input <= 0
+    raise TypeError, "Input must be an integer." unless input.is_a? Integer
 
     input.to_roman
   end
@@ -166,12 +171,28 @@ module MusicSetTheory
 
     attr_accessor :full_name, :key, :full_notes, :table_title, :rows
     def initialize( full_name, key, full_notes, table_title )
-      self.full_name    = full_name;
-      self.key          = key;
-      self.full_notes   = full_notes;
-      self.table_title  = table_title;
-      self.rows         = [];
+      self.full_name    = full_name
+      self.key          = key
+      self.full_notes   = full_notes
+      self.table_title  = table_title
+      self.rows         = []
     end
+
+    def to_a
+      tmp = []
+      tmp << [ self.full_name, self.key, self.full_notes, self.table_title, ]
+
+      #
+      self.rows.map{|r|
+        # tmp << r.to_a
+        # tmp += r.to_a
+        tmp << r.to_a
+      }
+
+      ret = tmp
+      ret
+    end
+
   end
 
   # Represents different rows (triads, 7ths, 9ths) in tabular
@@ -180,8 +201,18 @@ module MusicSetTheory
   class ScaleChordRow
     attr_accessor :chord_type, :notes
     def initialize( chord_type )
-      self.chord_type = chord_type;
-      self.notes = [];
+      self.chord_type = chord_type
+      self.notes = []
+    end
+
+    def to_a
+      # ret = "#{self.chord_type}:#{self.notes}"
+      tmp = []
+      self.notes.each do |nt|
+        tmp << [self.chord_type,] + nt.to_a
+      end
+      ret = tmp
+      ret
     end
   end
 
@@ -189,9 +220,13 @@ module MusicSetTheory
   class ScaleChordCell
     attr_accessor :chordname_1, :chordname_2, :notes
     def initialize( chordname_1, chordname_2, notes )
-      self.chordname_1 = chordname_1;
-      self.chordname_2 = chordname_2;
-      self.notes = notes;
+      self.chordname_1 = chordname_1
+      self.chordname_2 = chordname_2
+      self.notes = notes
+    end
+
+    def to_a
+      [self.chordname_1, self.chordname_2, self.notes]
     end
   end
 
@@ -201,6 +236,8 @@ end
 module MusicSetTheory
 
   # Used for converting "C" -> 1, "Db"-> 2b, etc.
+  #
+  #
   def makebaserep( notex, base = 0 )
     notexparsed = WestTemp.note_parse(notex)
     #pos_rep = str(WestTemp.nat_key_lookup_order[notexparsed[0]] + base)
@@ -211,7 +248,7 @@ module MusicSetTheory
     elsif notexparsed[1] < 0
       ret = pos_rep + (M_FLAT * (-1 * notexparsed[1]))
     else
-      ret = pos_rep;
+      ret = pos_rep
     end
 
     ret
@@ -219,25 +256,33 @@ module MusicSetTheory
 
 
   # Returns an instance of scale_chords using the following inputs:
-  # 
-  # scale_name: a name of a scale like "Dorian".
-  # key: generally a standard music key like "C".
-  # possiblechords: a sequence of chord types like "Seventh" and "Ninth".
+  # ==== Args
+  # scale_name:: a name of a scale like "Dorian".
+  # key:: generally a standard music key like "C".
+  # possiblechords:: a sequence of chord types like "Seventh" and "Ninth".
+  # west_temp:: Temperament object.
   #
-  def populate_scale_chords( scale_name, key, possiblechords )
-    our_scale = WestTemp.get_nseqby_name(scale_name, NSEQ_SCALE);
-    num_elem = len(our_scale.nseq_posn);
+  # ==== Returns
+  # ScaleChords object.
+  #
+  #def populate_scale_chords( scale_name, key, possiblechords )
+  def populate_scale_chords( scale_name, key, possiblechords,
+                             west_temp = WestTemp )
+    our_scale = west_temp.get_nseqby_name(scale_name, NSEQ_SCALE)
+    # num_elem = len(our_scale.nseq_posn)
+    num_elem = our_scale.nseq_posn.size
+
     begin
       int_of_key    = key.to_i
-      is_key_an_int = true;
+      is_key_an_int = true
     rescue ValueError
-      is_key_an_int = false;
-      int_of_key    = nil;
+      is_key_an_int = false
+      int_of_key    = nil
     end
 
     if is_key_an_int
       #our_scale_notes = [makebaserep(x, int_of_key) for x in 
-      #our_scale.get_notes_for_key("C")];
+      #our_scale.get_notes_for_key("C")]
       our_scale_notes = our_scale.get_notes_for_key("C").map{|x|
                           makebaserep(x, int_of_key) }
     else
@@ -251,19 +296,22 @@ module MusicSetTheory
       ourchordrow = ScaleChordRow.new(i)
       our_chord_data.rows.append(ourchordrow)
 
-      for j in range(num_elem):
-        our_slice = CHORDTYPE_DICT[i];
+      # for j in range(num_elem):
+      for j in 0...num_elem
+        our_slice = CHORDTYPE_DICT[i]
+
         if is_key_an_int
           #our_chord_notes = [makebaserep(x, int_of_key) for x in
-          #  our_scale.get_notes_for_key("C", j, our_slice)];
+          #  our_scale.get_notes_for_key("C", j, our_slice)]
           our_chord_notes = our_scale.get_notes_for_key("C", j, our_slice).
                               map{|x| makebaserep(x, int_of_key) }
         else
           our_chord_notes = our_scale.get_notes_for_key(key, j, our_slice)
         end
 
-        our_posn  = our_scale.get_posn_for_offset(j, our_slice, true)
-        our_chord = WestTemp.get_nseqby_seqpos(our_posn, NSEQ_CHORD)
+        #our_posn  = our_scale.get_posn_for_offset(j, our_slice, true)
+        our_posn  = our_scale.get_posn_for_offset(j, our_slice, raz: true)
+        our_chord = west_temp.get_nseqby_seqpos(our_posn, NSEQ_CHORD)
         if our_chord
           ourchordrow.notes.append(ScaleChordCell.new(our_chord.nseq_name,
             our_chord.nseq_abbrev, our_chord_notes))
@@ -295,16 +343,17 @@ module MusicSetTheory
       thestring += "<caption>%s</caption>\n" %
         (scale.key + " " + scale.full_name +
           ": " + seqtostr(scale.full_notes))
-      thestring += "<thead>\n" + startrow + "<th>Chord Types</th>\n";
-      for q in range(7):
-#             thestring += "<th>%s</th>\n" % str(int_to_roman(q+1));
+      thestring += "<thead>\n" + startrow + "<th>Chord Types</th>\n"
+      # for q in range(7)
+      for q in 0...7
+        thestring += "<th>%s</th>\n" % str(int_to_roman(q+1))
       end
-      thestring += endrow + "</thead>\n<tbody>\n";
+      thestring += endrow + "</thead>\n<tbody>\n"
 
-      for i in scale.rows:
-        thestring += startrow;    
-        thestring += "<td>%s</td>\n" % i.chord_type;
-        for j in i.notes:
+      for i in scale.rows
+        thestring += startrow
+        thestring += "<td>%s</td>\n" % i.chord_type
+        for j in i.notes
           if not j.chordname_1
             thestring += ("<td><p>%s<br />" % (str(j.chordname_1)))
             thestring += ("<i>%s</i><br />" % (str(j.chordname_2)))
