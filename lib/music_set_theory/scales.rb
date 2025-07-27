@@ -250,6 +250,9 @@ module MusicSetTheory
     # it (using slice, if not none). If and only if raz is True, the
     # result is rotated-and-zeroed.
     #
+    # ==== See Also
+    # - chord_generator.rb:`populate_scale_chords()`
+    #
     def get_posn_for_offset( rotate_by=0, slice=nil, raz: false )
       if slice
         modulus = self.nseq_temp.no_nat_keys
