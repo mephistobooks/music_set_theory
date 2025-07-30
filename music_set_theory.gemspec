@@ -10,7 +10,7 @@ Gem::Specification.new do |spec|
 
   spec.summary = "A music theory library for Ruby."
   spec.description = "A music theory library based on Python's `musictheory` package."
-  spec.homepage = "https://voidptrjp.blogspot.com/2025/07/musictheorygem.html"
+  spec.homepage = "https://voidptrjp.blogspot.com/2025/07/musicsettheorygem.html"
   spec.license = "MIT"
   spec.required_ruby_version = ">= 3.1.0"
 
